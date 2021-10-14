@@ -11,6 +11,11 @@ export class ViewPatientScreen extends React.Component {
         this.props.func_flag(true);
       }
 
+      const open_map = () => {
+        this.props.func_flag_map(patient);
+      }
+      
+
       return (
       <ScrollView style={styles.scrollView}>
             <TextInput style={styles.input} label="Apellidos" value={patient.last_name} onChangeText={text_last_name => patient.last_name = text_last_name} left={<TextInput.Icon name="account"/>} mode='outlined'/>
@@ -19,7 +24,7 @@ export class ViewPatientScreen extends React.Component {
             <TextInput style={styles.input} label="Estatura" value={patient.stature}  left={<TextInput.Icon name="account-details"/>} mode='outlined' keyboardType={'numeric'} />
             <TextInput style={styles.input} label="Dirección" value={patient.address} left={<TextInput.Icon name="map-marker"/>} mode='outlined'/>
             <Button style={styles.button} icon="content-save" mode="contained">Guardar</Button>
-            <Button style={styles.button} icon="map" mode="contained">Ver Mapa</Button>
+            <Button style={styles.button} onPress={open_map} icon="map" mode="contained">Ver Mapa</Button>
             <Button style={styles.button} onPress={send_flag} icon="clipboard-list-outline" mode="contained">Agregar Seguimiento</Button>
             <DataTable>
                 <DataTable.Header>
