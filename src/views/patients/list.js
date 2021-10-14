@@ -6,54 +6,54 @@ import * as RootNavigation from '../../../theme/navigation';
 import { ViewPatientScreen } from './view'
 import { Track } from '../../models/tracks';
 import {FormTrack} from '../tracks/form'
-
+import { ViewMapScreen } from '../map/map'
 
 
 export const ListPatientScreen = ({navigation}) => {
   const patients = [
-    new Patient('Summers', 'Scott', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined,[
+    new Patient('Summers', 'Scott', '2021-10-09', "1.8", 'Wetchester, New York', -16.392822, -71.547956, undefined,[
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined)
     ]),
-    new Patient('Grey', 'Jean', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
+    new Patient('Grey', 'Jean', '2021-10-09', "1.8", 'Wetchester, New York', -16.400227, -71.522216, undefined, [
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined)
     ]),
-    new Patient('MacCoy', 'Henry', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
+    new Patient('MacCoy', 'Henry', '2021-10-09', "1.8", 'Wetchester, New York', -16.399541, -71.536651, undefined, [
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined)
     ]),
-    new Patient('Xavier', 'Charles', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
+    new Patient('Xavier', 'Charles', '2021-10-09', "1.8", 'Wetchester, New York', -16.381324, -71.511675, undefined, [
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined)
     ]),
-    new Patient('Worthingthon', 'Warren', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
+    new Patient('Worthingthon', 'Warren', '2021-10-09', "1.8", 'Wetchester, New York', -16.381556, -71.522813, undefined, [
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined)
     ]),
-    new Patient('Dane', 'Lorna', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
+    new Patient('Dane', 'Lorna', '2021-10-09', "1.8", 'Wetchester, New York', -12.046783, -77.034236, undefined, [
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined)
     ]),
-    new Patient('Summers', 'Alex', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
+    new Patient('Summers', 'Alex', '2021-10-09', "1.8", 'Wetchester, New York', -34.628921, -58.391556, undefined, [
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
       new Track("2021-10-10", "58", "36", "90", "90",undefined),
@@ -99,8 +99,13 @@ export const ListPatientScreen = ({navigation}) => {
     set_patient(patient)
     showModal()
   }
-
-
+  var data_patient;
+  const [mapView,setMapView] = React.useState(false);
+  const hideModal_Map = () => setMapView(false);
+  const drawMap=(data_patient_in) => {
+    data_patient="Hola";
+    setMapView(true);
+  }
   
   return (
     <View style={styles.container}>
@@ -118,10 +123,14 @@ export const ListPatientScreen = ({navigation}) => {
       })}
       </ScrollView>
       <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-          <ViewPatientScreen patient={current_patient} func_flag={recieve_flag}/>          
+          <ViewPatientScreen patient={current_patient} func_flag={recieve_flag} func_flag_map={drawMap}/>          
       </Modal>
       <Modal visible={visible_form_track} onDismiss={hideModal_form_track} contentContainerStyle={containerStyle}>
           <FormTrack func_flag={recieve_flag_2}/>
+      </Modal>
+
+      <Modal visible={mapView} onDismiss={hideModal_Map} contentContainerStyle={containerStyle}>
+          <ViewMapScreen func_flag2={setMapView} patient={current_patient}/>
       </Modal>
     </View>
   );
