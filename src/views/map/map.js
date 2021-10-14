@@ -14,7 +14,7 @@ export class ViewMapScreen extends React.Component {
 
       return (
         <SafeAreaView forceInset={{top:"always"}}>
-          <Map firstname={patient.first_name} lastname={patient.last_name} latitude={patient.latitude} longitude={patient.longitude}/>
+          <Map firstname={patient.first_name} lastname={patient.last_name} latitude={parseFloat(patient.latitude)} longitude={ parseFloat(patient.longitude) }/>
         </SafeAreaView>
       )};
 }

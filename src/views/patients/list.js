@@ -7,90 +7,39 @@ import { ViewPatientScreen } from './view';
 import { Track } from '../../models/tracks';
 import {FormTrack} from '../tracks/form'
 import { ViewMapScreen } from '../map/map'
-
+import fireb  from '../../../database/firebase';
 
 export const ListPatientScreen = ({navigation}) => {
-  const patients = [
-    new Patient('Summers', 'Scott', '2021-10-09', "1.8", 'Wetchester, New York', -16.392822, -71.547956, undefined,[
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Grey', 'Jean', '2021-10-09', "1.8", 'Wetchester, New York', -16.400227, -71.522216, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('MacCoy', 'Henry', '2021-10-09', "1.8", 'Wetchester, New York', -16.399541, -71.536651, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Xavier', 'Charles', '2021-10-09', "1.8", 'Wetchester, New York', -16.381324, -71.511675, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Worthingthon', 'Warren', '2021-10-09', "1.8", 'Wetchester, New York', -16.381556, -71.522813, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Dane', 'Lorna', '2021-10-09', "1.8", 'Wetchester, New York', -12.046783, -77.034236, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Summers', 'Alex', '2021-10-09', "1.8", 'Wetchester, New York', -34.628921, -58.391556, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ])
-  ]
-
-  const item_list = patients.map(item => (
-    <List.Item
-      title="First Item"
-      description="Item description"
-      left={props => <List.Icon {...props} icon="folder" />}
-      />
-    )
-  );
-
+  const [patients,setPatients] = React.useState([]);
+ 
   React.useEffect(() => {
-    fireb.db.collection("patients").onSnapshot((querySnapshot )  => {
+    fireb.db.collection("patients").onSnapshot(querySnapshot  => {
+      const pat = [];
       querySnapshot.docs.forEach((doc) =>{
+       
         const {last_name,first_name,date_birth, stature, address, latitude, longitude } = doc.data()
-        patients.push({
-          id:doc.id,
-          last_name,
-          first_name,
-          date_birth,
-          stature,
-          address,
-          latitude,
-          longitude
-        })
-      } )
-    })
-  })
+        pat.push(
+          {
+            id:doc.id,
+            last_name,
+            first_name,
+            date_birth,
+            stature,
+            address,
+            latitude,
+            longitude,
+            tracking:[]
+          }
+        );
+
+      });
+      setPatients(pat);
+    });
+  });
 
 
   const [current_patient, set_patient] = React.useState(undefined);
+  //const [current_trakings,set_trakings] =  React.useState([]);
 
   const [visible, setVisible] = React.useState(false);
 
@@ -115,7 +64,28 @@ export const ListPatientScreen = ({navigation}) => {
 
 
 
-  const view_patient = (patient) => {
+  const view_patient = async (patient) => {
+    try{
+      fireb.db.collection("patients").doc(patient.id).collection("tracking").onSnapshot(querySnapshot  => {
+        const tra = [];
+        querySnapshot.docs.forEach((doc) =>{
+          const {date,presion,saturation, temperature,weigth} = doc.data()
+          tra.push(
+            {
+              id:doc.id,
+              date:date,
+              presion:presion,
+              saturation:saturation,
+              temperature:temperature,
+              weigth:weigth
+            }
+          )
+        });
+        patient.tracking = tra;
+      });
+    }catch (e){
+    }
+    
     set_patient(patient)
     showModal()
   }
@@ -126,11 +96,35 @@ export const ListPatientScreen = ({navigation}) => {
     data_patient="Hola";
     setMapView(true);
   }
+  const s_p = async (data_patient) =>{
+    setVisible(false)
+    await fireb.db.collection('patients').doc(current_patient.id).set({
+      address:current_patient.address,
+      date_birth:current_patient.date_birth,
+      first_name:current_patient.first_name,
+      last_name:current_patient.last_name,
+      latitude:current_patient.latitude,
+      longitude:current_patient.longitude,
+      stature:current_patient.stature         
+    });
+    alert('Actualizado');
+  }
+
+  const s_t = async (patient_id,track) =>{
+    setVisible_form_track(false)
+    await fireb.db.collection('patients').doc(patient_id).collection('tracking').add({
+      date:track.date,
+      presion:track.presion,
+      saturation:track.saturation,
+      temperature: track.temperature,
+      weigth: track.weigth
+    }); 
+  }
   
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
-      {patients.map((prop, key) => {
+      {patients.map((prop) => {
          return (
           <List.Item
             title={prop['first_name'] + ' ' +prop['last_name']}
@@ -143,10 +137,10 @@ export const ListPatientScreen = ({navigation}) => {
       })}
       </ScrollView>
       <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-          <ViewPatientScreen patient={current_patient} func_flag={recieve_flag} func_flag_map={drawMap}/>          
+          <ViewPatientScreen patient={current_patient} func_flag={recieve_flag} func_flag_map={drawMap} func_flag_save_patient={s_p}  />          
       </Modal>
       <Modal visible={visible_form_track} onDismiss={hideModal_form_track} contentContainerStyle={containerStyle}>
-          <FormTrack func_flag={recieve_flag_2}/>
+          <FormTrack patient={current_patient} func_flag_track={s_t} />
       </Modal>
 
       <Modal visible={mapView} onDismiss={hideModal_Map} contentContainerStyle={containerStyle}>

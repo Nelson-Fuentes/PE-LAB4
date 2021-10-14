@@ -24,9 +24,8 @@ export const FormPatientScreen = ({ navigation }) => {
           latitude:text_latitude,
           longitude:text_longitude,
           stature:text_estature         
-      })
-      
-      navigation.navigate('Lista de Pacientes', { name: 'Jane' })
+      });      
+      navigation.navigate('Lista de Pacientes', { name: 'Jane' });
     }
 
     
