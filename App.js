@@ -4,8 +4,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { ListPatientScreen } from './src/views/patients/list/'
-import { FormPatientScreen } from './src/views/patients/form/'
+import { ListPatientScreen } from './src/views/patients/list/';
+import { FormPatientScreen } from './src/views/patients/form/';
 import { Provider as PaperProvider } from "react-native-paper";
 import theme from "./theme/theme";
 

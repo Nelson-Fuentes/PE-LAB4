@@ -1,66 +1,16 @@
 import * as React from 'react';
 import { Text, View, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import { List , Modal} from 'react-native-paper';
-import Patient from '../../models/patient'
+import Patient from '../../models/patient';
 import * as RootNavigation from '../../../theme/navigation';
-import { ViewPatientScreen } from './view'
+import { ViewPatientScreen } from './view';
 import { Track } from '../../models/tracks';
-import {FormTrack} from '../tracks/form'
-
+import {FormTrack} from '../tracks/form';
+import fireb from '../../../database/firebase';
 
 
 export const ListPatientScreen = ({navigation}) => {
-  const patients = [
-    new Patient('Summers', 'Scott', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined,[
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Grey', 'Jean', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('MacCoy', 'Henry', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Xavier', 'Charles', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Worthingthon', 'Warren', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Dane', 'Lorna', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ]),
-    new Patient('Summers', 'Alex', '2021-10-09', "1.8", 'Wetchester, New York', 0,0, undefined, [
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined),
-      new Track("2021-10-10", "58", "36", "90", "90",undefined)
-    ])
-  ]
+  const patients = []
 
   const item_list = patients.map(item => (
     <List.Item
@@ -70,6 +20,26 @@ export const ListPatientScreen = ({navigation}) => {
       />
     )
   );
+
+  React.useEffect(() => {
+    fireb.db.collection("patients").onSnapshot((querySnapshot )  => {
+      querySnapshot.docs.forEach((doc) =>{
+        const {last_name,first_name,date_birth, stature, address, latitude, longitude } = doc.data()
+        patients.push({
+          id:doc.id,
+          last_name,
+          first_name,
+          date_birth,
+          stature,
+          address,
+          latitude,
+          longitude
+        })
+      } )
+    })
+  })
+
+
   const [current_patient, set_patient] = React.useState(undefined);
 
   const [visible, setVisible] = React.useState(false);
